@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "minman"
+dynamic = ["version"]
+description = "MinMan - a tiny local API client."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Sangam Singh", email = "sangamsingh9559@gmail.com" }]
+keywords = ["api", "http", "client", "rest"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Framework :: Flask",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = ["Flask>=3", "requests>=2.31", "truststore>=0.9"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://github.com/sangamsingh01/MinMan"
+Issues = "https://github.com/sangamsingh01/MinMan/issues"
+
+[project.scripts]
+minman = "minman.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "minman.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+minman = ["static/index.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
