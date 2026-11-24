@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="author" content="Sangam (SSP)">
+  <meta name="author" content="Sangam Singh">
   <title>MinMan</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f2a24'/%3E%3Cpath d='M13 24V9l6 7 6-7v15' fill='none' stroke='%23e3e8df' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 24V9l6 7 6-7v15' fill='none' stroke='%231f2a24' stroke-width='6.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 24V9l6 7 6-7v15' fill='none' stroke='%234cb87a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <script>if (localStorage.getItem('minman-theme') !== 'light') document.documentElement.dataset.theme = 'dark';</script>
@@ -35,7 +35,9 @@
     body { margin: 0; min-width: 340px; height: 100vh; color: var(--ink); background: var(--paper); font: 14px/1.45 "Segoe UI", sans-serif; }
     button, input, select, textarea { font: inherit; }
     button { color: inherit; cursor: pointer; }
-    .app { display: grid; grid-template-rows: 58px minmax(0, 1fr); height: 100vh; }
+    .app { display: grid; grid-template-rows: 58px minmax(0, 1fr) auto; height: 100vh; }
+    .app-footer { padding: 4px 12px; border-top: 1px solid var(--line); background: var(--panel); color: var(--muted); font: 700 12px/1.3 Georgia, serif; letter-spacing: .04em; text-align: center; user-select: none; }
+    .app-footer span { color: var(--green); }
     .topbar { display: flex; align-items: center; gap: 18px; padding: 0 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
     .brand { display: flex; align-items: center; gap: 8px; font: 700 21px/1 Georgia, serif; letter-spacing: 0; }
     .brand-logo { width: 26px; height: 26px; flex: 0 0 26px; }
@@ -123,10 +125,10 @@
     .about-list { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin: 0; }
     .about-list dt { color: var(--muted); }
     .about-list dd { margin: 0; overflow-wrap: anywhere; }
+    .about-copy { margin: 18px 0 0; color: var(--muted); font-size: 14px; }
     .field { display: grid; gap: 6px; margin-bottom: 14px; }
     .field label { color: var(--muted); font-size: 12px; font-weight: 700; }
     #curlInput, #exportCurlText { width: 100%; height: 220px; resize: vertical; font: 13px/1.5 Consolas, monospace; }
-    .sig { margin-top: auto; padding: 12px 14px 14px; color: var(--muted); font: italic 700 18px/1 Georgia, serif; letter-spacing: .08em; opacity: .18; user-select: none; pointer-events: none; }
     .notice { min-height: 20px; padding: 0 20px 6px; color: var(--coral); }
     .muted { color: var(--muted); }
     .token-field { position: relative; display: flex; }
@@ -251,7 +253,7 @@
 <body>
   <div class="app">
     <header class="topbar">
-      <div class="brand" title="MinMan · crafted by SSP"><svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1f2a24"/><path d="M13 24V9l6 7 6-7v15" fill="none" stroke="#e3e8df" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 24V9l6 7 6-7v15" fill="none" stroke="#1f2a24" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 24V9l6 7 6-7v15" fill="none" stroke="#4cb87a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-text">Min<span>Man</span></span></div>
+      <div class="brand" title="MinMan"><svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1f2a24"/><path d="M13 24V9l6 7 6-7v15" fill="none" stroke="#e3e8df" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 24V9l6 7 6-7v15" fill="none" stroke="#1f2a24" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 24V9l6 7 6-7v15" fill="none" stroke="#4cb87a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-text">Min<span>Man</span></span></div>
       <div class="top-spacer"></div>
       <div class="token-box"><label for="tokenInput">Token</label><span class="token-field"><input id="tokenInput" type="password" autocomplete="off" placeholder="Authorization_token"><button type="button" class="icon-btn token-eye" id="tokenEye" title="Show token" aria-label="Show token" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M4 4l16 16"/></svg></button></span><span class="token-expiry" id="tokenExpiry"></span></div>
       <select id="envSelect" class="env-select" aria-label="Active environment" title="Active environment"></select>
@@ -265,7 +267,6 @@
         <div class="side-head"><strong>Collections</strong><button class="btn" id="addFolder">+ Folder</button></div>
         <div class="side-search"><input id="treeSearch" type="search" placeholder="Search requests" aria-label="Search requests"></div>
         <div id="tree"></div>
-        <div class="sig" aria-hidden="true">SSP</div>
       </aside>
       <div class="splitter vertical" id="sidebarResizer" role="separator" aria-orientation="vertical" aria-label="Resize collections sidebar" tabindex="0"></div>
       <main>
@@ -317,6 +318,7 @@
         </section>
       </main>
     </div>
+    <footer class="app-footer">Min<span>Man</span></footer>
   </div>
 
   <dialog id="folderDialog">
@@ -390,10 +392,10 @@
         <p class="muted">A tiny local API client. Your data stays on this computer.</p>
         <dl class="about-list">
           <dt>Version</dt><dd id="aboutVersion">–</dd>
-          <dt>Developed by</dt><dd>Sangam Singh (SSP)</dd>
-          <dt>Source</dt><dd><a href="https://github.com/sangamsingh01/MinMan" target="_blank" rel="noopener noreferrer">github.com/sangamsingh01/MinMan</a></dd>
-          <dt>Data folder</dt><dd><code id="aboutData">–</code></dd>
+          <dt>License</dt><dd>MIT</dd>
+          <dt>Contact</dt><dd><a href="mailto:sangam.ai.work@gmail.com">sangam.ai.work@gmail.com</a></dd>
         </dl>
+        <p class="about-copy">© 2026 Sangam Singh | MinMan</p>
       </div>
       <div class="dialog-actions"><button class="btn" value="cancel">Close</button></div>
     </form>
@@ -1211,7 +1213,7 @@
     $('aboutButton').addEventListener('click', async () => {
       try {
         const about = await api('/api/about');
-        $('aboutVersion').textContent = about.version; $('aboutData').textContent = about.data_dir;
+        $('aboutVersion').textContent = about.version;
       } catch (error) { showNotice(error.message); }
       $('aboutDialog').showModal();
     });

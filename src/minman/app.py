@@ -14,7 +14,7 @@ from minman.storage import (
     read_environments, read_json, request_path, response_versions, safe_name, write_json,
 )
 
-__author__ = "Sangam (SSP)"
+__author__ = "Sangam Singh"
 
 
 PACKAGE_DIR = Path(__file__).resolve().parent
@@ -40,7 +40,7 @@ def home():
 
 @app.get("/api/about")
 def about():
-    return jsonify(version=__version__, data_dir=str(storage.COLLECTIONS.parent))
+    return jsonify(version=__version__)
 
 
 @app.get("/api/tree")
