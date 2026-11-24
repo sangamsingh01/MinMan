@@ -8,6 +8,7 @@ import requests
 
 VARIABLE_PATTERN = re.compile(r"\{\{\s*([A-Za-z0-9_.-]+)\s*\}\}")
 METHODS = {"GET", "POST", "PUT", "PATCH", "DELETE"}
+MAX_RESPONSE_BYTES = 50 * 1024 * 1024
 
 
 class RequestError(ValueError):
@@ -98,8 +99,17 @@ def send(data, variables):
             files.append((row["key"], (row.get("filename") or "file", base64.b64decode(row["content"]))))
     started = time.perf_counter()
     response = requests.request(
-        method, url, params=params, headers=headers, data=body, files=files or None, timeout=60
+        method, url, params=params, headers=headers, data=body, files=files or None, timeout=60, stream=True
     )
+    chunks, size = [], 0
+    for chunk in response.iter_content(64 * 1024):
+        size += len(chunk)
+        if size > MAX_RESPONSE_BYTES:
+            response.close()
+            raise RequestError("The response is larger than 50 MB, so MinMan stopped downloading it.")
+        chunks.append(chunk)
+    # Hand the capped body back to requests so .text and .json() use it.
+    response._content = b"".join(chunks)
     elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
     content_type = response.headers.get("Content-Type", "")
     body_base64 = None

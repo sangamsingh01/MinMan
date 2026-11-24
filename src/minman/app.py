@@ -20,6 +20,8 @@ __author__ = "Sangam Singh"
 PACKAGE_DIR = Path(__file__).resolve().parent
 
 app = Flask(__name__)
+# Room for file uploads, which arrive base64-encoded inside the JSON body.
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 
 
 def error(message, status=400):
@@ -31,6 +33,15 @@ def local_only():
     # Blocks DNS-rebinding: other sites must not reach this API through a hostname pointing at 127.0.0.1.
     if request.host.rsplit(":", 1)[0] not in ("127.0.0.1", "localhost"):
         return error("Forbidden host.", 403)
+    # Blocks other websites open in the browser from calling this API (CSRF).
+    origin = request.headers.get("Origin")
+    if origin is not None and origin != f"{request.scheme}://{request.host}":
+        return error("Forbidden origin.", 403)
+
+
+@app.errorhandler(413)
+def too_large(_):
+    return error("Request is too large (limit 50 MB).", 413)
 
 
 @app.get("/")

@@ -19,6 +19,12 @@ class FakeResponse:
     def json(self):
         return {"ok": True}
 
+    def iter_content(self, chunk_size):
+        yield self.content
+
+    def close(self):
+        pass
+
 
 @pytest.fixture
 def sent(monkeypatch):
@@ -34,6 +40,34 @@ def sent(monkeypatch):
 
 def test_rejects_foreign_host(client):
     assert client.get("/api/tree", headers={"Host": "evil.example"}).status_code == 403
+
+
+def test_rejects_foreign_origin(client, sent):
+    response = client.post("/api/send", json={"url": "https://example.com"}, headers={"Origin": "https://evil.example"})
+    assert response.status_code == 403
+    assert client.delete("/api/folders/x", headers={"Origin": "http://localhost:3326"}).status_code == 403
+    assert not sent
+
+
+def test_allows_same_origin(client, sent):
+    origin = "http://localhost"
+    response = client.post("/api/send", json={"url": "https://example.com"}, headers={"Origin": origin})
+    assert response.status_code == 200
+
+
+def test_rejects_large_request(client):
+    response = client.post("/api/send", data=b"x" * (50 * 1024 * 1024 + 1), content_type="application/json")
+    assert response.status_code == 413
+    assert "too large" in response.get_json()["error"]
+
+
+def test_rejects_large_response(client, monkeypatch):
+    from minman import http_client
+    monkeypatch.setattr(http_client, "MAX_RESPONSE_BYTES", 5)
+    monkeypatch.setattr(requests, "request", lambda *args, **kwargs: FakeResponse())
+    response = client.post("/api/send", json={"url": "https://example.com"})
+    assert response.status_code == 400
+    assert "larger than" in response.get_json()["error"]
 
 
 def test_serves_ui(client):

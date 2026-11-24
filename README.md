@@ -44,7 +44,7 @@ minman --port 5050 --no-browser
 - **Auth**: Token box (default), Bearer, Basic or API key (header or query).
 - **Body**: None, JSON, Text, URL-encoded or Form-data with file upload.
 - **Environments**: reusable `{{name}}` variables (e.g. `{{base_url}}`) in several environments such as Dev and Prod. Switch between them in the top bar.
-- **Token box**: shows when a JWT expires; the eye button shows or hides it. The token stays in your browser and is never written to disk.
+- **Token box**: shows when a JWT expires; the eye button shows or hides it. The token is remembered in your browser's local storage (not in `~/.minman`); clear the box to forget it.
 - **cURL**: **Import cURL** fills a request from a command; **Export cURL** gives a command to copy or download.
 - **Responses**: status, time and size. **Pretty** shows JSON as a collapsible tree, **Raw** shows plain text, **Preview** renders HTML or images, and search highlights matches.
 - **Saved versions**: **Save response** stores numbered versions (`_v1`, `_v2`, ...) that you can reopen later.
@@ -59,7 +59,16 @@ Everything is stored in `~/.minman`:
 - `responses/`: saved response versions
 - `variables.json`: environments
 
-MinMan only listens on `127.0.0.1`, so it cannot be reached from other computers.
+These are plain, unencrypted JSON files. Credentials typed into a request's **Auth** tab (Bearer, Basic, API key) are saved with that request, so for secrets prefer a `{{variable}}` or the Token box.
+
+MinMan only listens on `127.0.0.1`, so it cannot be reached from other computers, and it rejects calls from other websites open in your browser.
+
+## Limitations
+
+- Methods: GET, POST, PUT, PATCH, DELETE only.
+- Requests time out after 60 seconds.
+- Requests sent to MinMan (including uploaded files) and responses it downloads are limited to 50 MB each.
+- Single user, single machine: no sync, sharing or team features.
 
 ## Development
 
@@ -69,3 +78,7 @@ python -m venv .venv
 pip install -e ".[test]"
 pytest
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
