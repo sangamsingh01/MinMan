@@ -6,7 +6,7 @@ from pathlib import Path
 import requests
 from flask import Flask, jsonify, request, send_from_directory
 
-from minman import storage
+from minman import __version__, storage
 from minman.curl import parse_curl
 from minman.http_client import RequestError, send
 from minman.storage import (
@@ -36,6 +36,11 @@ def local_only():
 @app.get("/")
 def home():
     return send_from_directory(PACKAGE_DIR / "static", "index.html")
+
+
+@app.get("/api/about")
+def about():
+    return jsonify(version=__version__, data_dir=str(storage.COLLECTIONS.parent))
 
 
 @app.get("/api/tree")

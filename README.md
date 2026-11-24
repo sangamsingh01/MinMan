@@ -50,6 +50,7 @@ minman --port 5050 --no-browser
 - **Saved versions**: **Save response** stores numbered versions (`_v1`, `_v2`, ...) that you can reopen later.
 - **Shortcuts**: `Ctrl+Enter` sends, `Ctrl+S` saves, `Esc` cancels. A ● marks unsaved changes.
 - Dark and light themes, resizable panes.
+- **About** (ⓘ in the top bar): version, developer, source link and data folder.
 
 ## Your data
 

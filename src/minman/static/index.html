@@ -120,6 +120,9 @@
     .dialog-head h2 { margin: 0; font: 700 18px Georgia, serif; }
     .dialog-content { max-height: 65vh; overflow: auto; padding: 16px 18px; }
     .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--line); }
+    .about-list { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin: 0; }
+    .about-list dt { color: var(--muted); }
+    .about-list dd { margin: 0; overflow-wrap: anywhere; }
     .field { display: grid; gap: 6px; margin-bottom: 14px; }
     .field label { color: var(--muted); font-size: 12px; font-weight: 700; }
     #curlInput, #exportCurlText { width: 100%; height: 220px; resize: vertical; font: 13px/1.5 Consolas, monospace; }
@@ -255,6 +258,7 @@
       <button class="btn" id="variablesButton">Environment variables</button>
       <button class="btn" id="curlButton">Import cURL</button>
       <button class="btn" id="themeButton" type="button"></button>
+      <button class="btn" id="aboutButton" type="button" title="About MinMan" aria-label="About MinMan">ⓘ</button>
     </header>
     <div class="layout">
       <aside>
@@ -377,6 +381,21 @@
         <div class="row-tools"><button type="button" class="btn" id="addVariable">+ Add variable</button></div><div id="variablesRows"></div>
       </div>
       <div class="dialog-actions"><button class="btn" value="cancel">Cancel</button><button class="btn primary" id="saveVariables" value="default">Save variables</button></div>
+    </form>
+  </dialog>
+  <dialog id="aboutDialog">
+    <form method="dialog">
+      <div class="dialog-head"><h2>About MinMan</h2><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
+      <div class="dialog-content">
+        <p class="muted">A tiny local API client. Your data stays on this computer.</p>
+        <dl class="about-list">
+          <dt>Version</dt><dd id="aboutVersion">–</dd>
+          <dt>Developed by</dt><dd>Sangam Singh (SSP)</dd>
+          <dt>Source</dt><dd><a href="https://github.com/sangamsingh01/MinMan" target="_blank" rel="noopener noreferrer">github.com/sangamsingh01/MinMan</a></dd>
+          <dt>Data folder</dt><dd><code id="aboutData">–</code></dd>
+        </dl>
+      </div>
+      <div class="dialog-actions"><button class="btn" value="cancel">Close</button></div>
     </form>
   </dialog>
   <script>
@@ -1189,6 +1208,13 @@
     $('saveButton').addEventListener('click', openSaveDialog);
     $('curlButton').addEventListener('click', () => $('curlDialog').showModal());
     $('variablesButton').addEventListener('click', openVariables);
+    $('aboutButton').addEventListener('click', async () => {
+      try {
+        const about = await api('/api/about');
+        $('aboutVersion').textContent = about.version; $('aboutData').textContent = about.data_dir;
+      } catch (error) { showNotice(error.message); }
+      $('aboutDialog').showModal();
+    });
     $('addVariable').addEventListener('click', () => $('variablesRows').append(variableRow()));
     $('tokenInput').value = localStorage.getItem('minman-token') || '';
     function renderThemeButton() {

@@ -1,6 +1,7 @@
 import pytest
 import requests
 
+from minman import __version__
 from minman.app import app
 from minman.storage import configure
 
@@ -40,6 +41,10 @@ def test_serves_ui(client):
     assert response.status_code == 200
     assert b"<html" in response.data.lower()
     response.close()
+
+
+def test_about(client, tmp_path):
+    assert client.get("/api/about").get_json() == {"version": __version__, "data_dir": str(tmp_path.resolve())}
 
 
 def test_rejects_unsafe_names(client):
