@@ -52,32 +52,6 @@ minman --port 5050 --no-browser
 - Dark and light themes, resizable panes.
 - **About** (ⓘ in the top bar): version, license and contact.
 
-## Your data
-
-Everything is stored in `~/.minman`:
-- `collections/`: saved requests
-- `responses/`: saved response versions
-- `variables.json`: environments
-
-These are plain, unencrypted JSON files. Credentials typed into a request's **Auth** tab (Bearer, Basic, API key) are saved with that request, so for secrets prefer a `{{variable}}` or the Token box.
-
-MinMan only listens on `127.0.0.1`, so it cannot be reached from other computers, and it rejects calls from other websites open in your browser.
-
-## Limitations
-
-- Methods: GET, POST, PUT, PATCH, DELETE only.
-- Requests time out after 60 seconds.
-- Requests sent to MinMan (including uploaded files) and responses it downloads are limited to 50 MB each.
-- Single user, single machine: no sync, sharing or team features.
-
-## Development
-
-```
-python -m venv .venv
-.venv\Scripts\activate          # macOS/Linux: source .venv/bin/activate
-pip install -e ".[test]"
-pytest
-```
 
 ## License
 
