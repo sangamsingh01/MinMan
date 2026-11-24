@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "Sangam Singh", email = "sangamsingh9559@gmail.com" }]
+authors = [{ name = "Sangam Singh", email = "sangam.ai.work@gmail.com" }]
 keywords = ["api", "http", "client", "rest"]
 classifiers = [
     "Programming Language :: Python :: 3",
