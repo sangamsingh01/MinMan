@@ -43,8 +43,8 @@ def test_serves_ui(client):
     response.close()
 
 
-def test_about(client, tmp_path):
-    assert client.get("/api/about").get_json() == {"version": __version__, "data_dir": str(tmp_path.resolve())}
+def test_about(client):
+    assert client.get("/api/about").get_json() == {"version": __version__}
 
 
 def test_rejects_unsafe_names(client):
